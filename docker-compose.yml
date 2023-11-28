@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  traefik:
+    # container_name: API-Gateway-Trafeik
+    image: traefik:v2.10
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    networks:
+      - microservices-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  nodejs-microservice:
+    # container_name: Microservice-Nodejs
+    build:
+      context: ./nodejs-microservice
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nodejs-microservice.rule=Host(`nodejs-microservice.localhost`)"
+      - "traefik.http.routers.nodejs-microservice.entrypoints=web"
+      - "traefik.http.services.nodejs-microservice.loadbalancer.server.port=3000"
+      # - "traefik.http.services.nodejs-microservice.healthcheck.path=/health"
+
+    networks:
+      - microservices-network
+
+  python-flask-microservice:
+    # container_name: Microservice-python-flask
+    build:
+      context: ./python-flask-microservice
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.python-flask-microservice.rule=Host(`python-flask-microservice.localhost`)"
+      - "traefik.http.routers.python-flask-microservice.entrypoints=web"
+      - "traefik.http.services.python-flask-microservice.loadbalancer.server.port=5000"
+      # - "traefik.http.services.python-flask-microservice.healthcheck.path=/health"
+
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
