@@ -5,7 +5,8 @@ const port = 3000;
 
 // Define a simple endpoint
 app.get('/', (req, res) => {
-  res.json({ message: 'Hello from Node.js microservice!' });
+  console.log("Hello! ==> ", Date.now())
+  retuDate.now().json({ message: 'Hello from Node.js microservice!' });
 });
 
 // Register with Traefik
@@ -15,8 +16,9 @@ app.use((req, res, next) => {
 });
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).send('OK');
+app.all('/health', (req, res) => {
+  console.log("Healthy! ==> ", Date.now())
+  return res.status(200).send('OK');
 });
 
 // Start the server
