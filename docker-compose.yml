@@ -40,13 +40,13 @@ services:
       context: ./python-flask-microservice
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nodejs-microservice.rule=Host(`nodejs-microservice.localhost`)"
-      - "traefik.http.routers.nodejs-microservice.entrypoints=web"
-      - "traefik.http.services.nodejs-microservice.loadbalancer.server.port=3000"    
-      - "traefik.http.routers.nodejs-microservice.service=nodejs-microservice"
-      - "traefik.http.services.nodejs-microservice.loadbalancer.healthcheck.path=/health"
-      - "traefik.http.services.nodejs-microservice.loadbalancer.healthcheck.interval=30s"
-      - "traefik.http.services.nodejs-microservice.loadbalancer.healthcheck.timeout=10s"
+      - "traefik.http.routers.python-flask-microservice.rule=Host(`python-flask-microservice.localhost`)"
+      - "traefik.http.routers.python-flask-microservice.entrypoints=web"
+      - "traefik.http.services.python-flask-microservice.loadbalancer.server.port=5000"    
+      - "traefik.http.routers.python-flask-microservice.service=python-flask-microservice"
+      - "traefik.http.services.python-flask-microservice.loadbalancer.healthcheck.path=/health"
+      - "traefik.http.services.python-flask-microservice.loadbalancer.healthcheck.interval=30s"
+      - "traefik.http.services.python-flask-microservice.loadbalancer.healthcheck.timeout=10s"
 
     networks:
       - microservices-network
