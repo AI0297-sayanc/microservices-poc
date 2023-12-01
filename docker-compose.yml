@@ -51,5 +51,18 @@ services:
     networks:
       - microservices-network
 
+  non-web-service:
+    build:
+      context: ./non-web-service
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.non-web-service_router.rule=HostSNI(`*`)"
+      # - "traefik.tcp.routers.non-web-service_router.entrypoints=web"
+      - "traefik.tcp.services.non-web-service.loadbalancer.server.port=3000"
+
+    networks:
+      - microservices-network
+
 networks:
   microservices-network:
