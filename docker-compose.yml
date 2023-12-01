@@ -21,6 +21,7 @@ services:
     # container_name: Microservice-Nodejs
     build:
       context: ./nodejs-microservice
+      dockerfile: Dockerfile
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nodejs-microservice.rule=Host(`nodejs-microservice.localhost`)"
@@ -38,6 +39,7 @@ services:
     # container_name: Microservice-python-flask
     build:
       context: ./python-flask-microservice
+      dockerfile: Dockerfile
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.python-flask-microservice.rule=Host(`python-flask-microservice.localhost`)"
