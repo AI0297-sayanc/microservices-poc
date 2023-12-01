@@ -6,7 +6,7 @@ const port = 3000;
 // Define a simple endpoint
 app.get('/', (req, res) => {
   console.log("Hello! ==> ", Date.now())
-  retuDate.now().json({ message: 'Hello from Node.js microservice!' });
+  return res.json({ message: 'Hello from Node.js microservice!' });
 });
 
 // Register with Traefik
