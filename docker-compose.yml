@@ -8,6 +8,7 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedByDefault=false"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.tcp.address=:30000"
     ports:
       - "80:80"
       - "8080:8080"
@@ -22,7 +23,7 @@ services:
       dockerfile: Dockerfile
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nodejs-microservice.rule=Host(`nodejs-microservice.docker.localhost`)"
+      - "traefik.http.routers.nodejs-microservice.rule=Host(`nodejs-microservice.localhost`)"
       - "traefik.http.routers.nodejs-microservice.entrypoints=web"
       - "traefik.http.services.nodejs-microservice.loadbalancer.server.port=3000"    
       - "traefik.http.routers.nodejs-microservice.service=nodejs-microservice"
@@ -59,7 +60,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.routers.non-web-service_router.rule=HostSNI(`*`)"
-      - "traefik.tcp.services.non-web-service.loadbalancer.server.port=3000"
+      - "traefik.tcp.routers.non-web-service_router.entrypoints=tcp"
+      - "traefik.tcp.services.non-web-service.loadbalancer.server.port=30001"
     networks:
       - microservices-network
     environment:
