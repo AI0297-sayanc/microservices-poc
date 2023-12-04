@@ -10,4 +10,5 @@ WORKDIR /app
 
 COPY . .
 
-CMD ["node", "app.js"]
+CMD ["tail", "-f", "/dev/null"]
+# CMD ["node", "app.js"]
