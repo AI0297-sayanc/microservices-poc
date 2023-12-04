@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nodejs-microservice.rule=Host(`nodejs-microservice.localhost`)"
+      - "traefik.http.routers.nodejs-microservice.rule=Host(`nodejs-microservice.docker.localhost`)"
       - "traefik.http.routers.nodejs-microservice.entrypoints=web"
       - "traefik.http.services.nodejs-microservice.loadbalancer.server.port=3000"    
       - "traefik.http.routers.nodejs-microservice.service=nodejs-microservice"
@@ -31,6 +31,8 @@ services:
       - "traefik.http.services.nodejs-microservice.loadbalancer.healthcheck.timeout=10s"
     networks:
       - microservices-network
+    environment:
+      SERVICE_UNIQUE_ID: "nodejs-microservicee"
 
   python-flask-microservice:
     build:
@@ -47,6 +49,8 @@ services:
       - "traefik.http.services.python-flask-microservice.loadbalancer.healthcheck.timeout=10s"
     networks:
       - microservices-network
+    environment:
+      SERVICE_UNIQUE_ID: "python-flask-microservice"
 
   non-web-service:
     build:
@@ -58,6 +62,8 @@ services:
       - "traefik.tcp.services.non-web-service.loadbalancer.server.port=3000"
     networks:
       - microservices-network
+    environment:
+      SERVICE_UNIQUE_ID: "non-web-service"
 
   redpanda:
     image: docker.redpanda.com/redpandadata/redpanda:v23.2.17
