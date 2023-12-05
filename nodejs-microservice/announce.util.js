@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 
 // Define the Kafka broker(s)
 const kafka = new Kafka({
-  clientId: process.env.SERVICE_UNIQUE_ID || `my-producer-${uuidv4()}`,
+  clientId: uuidv4(),
   brokers: ['redpanda:9092'], // Replace with your Redpanda broker address
 });
 
