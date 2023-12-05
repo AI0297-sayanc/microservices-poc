@@ -35,7 +35,9 @@ services:
     networks:
       - microservices-network
     environment:
-      SERVICE_UNIQUE_ID: "nodejs-microservicee"
+      SERVICE_UNIQUE_ID: "nodejs-microservice"
+    depends_on:
+      - redpanda
 
   python-flask-microservice:
     build:
@@ -56,6 +58,8 @@ services:
       - microservices-network
     environment:
       SERVICE_UNIQUE_ID: "python-flask-microservice"
+    depends_on:
+      - redpanda      
 
   non-web-service:
     build:
@@ -70,6 +74,8 @@ services:
       - microservices-network
     environment:
       SERVICE_UNIQUE_ID: "non-web-service"
+    depends_on:
+      - redpanda      
 
   redpanda:
     image: docker.redpanda.com/redpandadata/redpanda:v23.2.17
