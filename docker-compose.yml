@@ -25,10 +25,12 @@ services:
       dockerfile: Dockerfile
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nodejs-microservice.rule=Host(`nodejs-microservice.localhost`)"
-      - "traefik.http.routers.nodejs-microservice.entrypoints=web"
+      - "traefik.http.routers.nodejs-microservice-router.rule=Host(`microservices-poc.localhost`) && PathPrefix(`/nodejs`)"
+      - "traefik.http.routers.nodejs-microservice-router.entrypoints=web"
+      - "traefik.http.routers.nodejs-microservice-router.service=nodejs-microservice"
+      - "traefik.http.routers.nodejs-microservice-router.middlewares=strip-nodejs"
+      - "traefik.http.middlewares.strip-nodejs.stripprefix.prefixes=/nodejs"
       - "traefik.http.services.nodejs-microservice.loadbalancer.server.port=3000"    
-      - "traefik.http.routers.nodejs-microservice.service=nodejs-microservice"
       - "traefik.http.services.nodejs-microservice.loadbalancer.healthcheck.path=/health"
       - "traefik.http.services.nodejs-microservice.loadbalancer.healthcheck.interval=30s"
       - "traefik.http.services.nodejs-microservice.loadbalancer.healthcheck.timeout=10s"
@@ -42,10 +44,12 @@ services:
       dockerfile: Dockerfile
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.python-flask-microservice.rule=Host(`python-flask-microservice.localhost`)"
-      - "traefik.http.routers.python-flask-microservice.entrypoints=web"
+      - "traefik.http.routers.python-flask-microservice-router.rule=Host(`microservices-poc.localhost`) && PathPrefix(`/python`)"
+      - "traefik.http.routers.python-flask-microservice-router.entrypoints=web"
+      - "traefik.http.routers.python-flask-microservice-router.service=python-flask-microservice"
+      - "traefik.http.routers.python-flask-microservice-router.middlewares=strip-python"
+      - "traefik.http.middlewares.strip-python.stripprefix.prefixes=/python"
       - "traefik.http.services.python-flask-microservice.loadbalancer.server.port=5000"    
-      - "traefik.http.routers.python-flask-microservice.service=python-flask-microservice"
       - "traefik.http.services.python-flask-microservice.loadbalancer.healthcheck.path=/health"
       - "traefik.http.services.python-flask-microservice.loadbalancer.healthcheck.interval=30s"
       - "traefik.http.services.python-flask-microservice.loadbalancer.healthcheck.timeout=10s"
