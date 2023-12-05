@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request
+from kafka import KafkaProducer
 import socket
+import os
 
 app = Flask(__name__)
 port = 5000
@@ -18,6 +20,15 @@ def hello():
 
     # Get the IP address associated with the server's hostname
     server_ip = socket.gethostbyname(server_hostname)
+
+    # Code to send async message via Redpanda broker
+    producer = KafkaProducer(bootstrap_servers='redpanda:9092')
+    topic = os.environ.get("SERVICE_UNIQUE_ID")
+    print("topic", topic)
+    message = "OK"
+    producer.send(topic, value=message.encode('utf-8'))
+    producer.close()
+
     return jsonify(message=f'Hello from Python Flask microservice ({server_ip})!'), 200, headers
 
 

@@ -2,7 +2,6 @@ version: '3.8'
 
 services:
   traefik:
-    # container_name: API-Gateway-Trafeik
     image: traefik:v2.10
     command:
       - "--api.insecure=true"
@@ -19,7 +18,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   nodejs-microservice:
-    # container_name: Microservice-Nodejs
     build:
       context: ./nodejs-microservice
       dockerfile: Dockerfile
@@ -36,9 +34,12 @@ services:
       - "traefik.http.services.nodejs-microservice.loadbalancer.healthcheck.timeout=10s"
     networks:
       - microservices-network
+    environment:
+      SERVICE_UNIQUE_ID: "nodejs-microservice"
+    depends_on:
+      - redpanda
 
   python-flask-microservice:
-    # container_name: Microservice-python-flask
     build:
       context: ./python-flask-microservice
       dockerfile: Dockerfile
@@ -55,6 +56,10 @@ services:
       - "traefik.http.services.python-flask-microservice.loadbalancer.healthcheck.timeout=10s"
     networks:
       - microservices-network
+    environment:
+      SERVICE_UNIQUE_ID: "python-flask-microservice"
+    depends_on:
+      - redpanda      
 
   non-web-service:
     build:
@@ -67,6 +72,68 @@ services:
       - "traefik.tcp.services.non-web-service.loadbalancer.server.port=30001"
     networks:
       - microservices-network
+    environment:
+      SERVICE_UNIQUE_ID: "non-web-service"
+    depends_on:
+      - redpanda      
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v23.2.17
+    command:
+      - redpanda
+      - start
+      - --kafka-addr internal://0.0.0.0:9092
+      # Address the broker advertises to clients that connect to the Kafka API.
+      # Use the internal addresses to connect to the Redpanda brokers'
+      # from inside the same Docker network.
+      # Use the external addresses to connect to the Redpanda brokers'
+      # from outside the Docker network.
+      - --advertise-kafka-addr internal://redpanda:9092
+      - --pandaproxy-addr internal://0.0.0.0:8082
+      # Address the broker advertises to clients that connect to the HTTP Proxy.
+      - --advertise-pandaproxy-addr internal://redpanda:8082
+      - --schema-registry-addr internal://0.0.0.0:8081
+      # Redpanda brokers use the RPC API to communicate with eachother internally.
+      - --rpc-addr redpanda:33145
+      - --advertise-rpc-addr redpanda:33145
+      # Tells Seastar (the framework Redpanda uses under the hood) to use 1 core on the system.
+      - --smp 1
+      # The amount of memory to make available to Redpanda.
+      - --memory 512M
+      # Mode dev-container uses well-known configuration properties for development in containers.
+      - --mode dev-container
+      # enable logs for debugging.
+      - --default-log-level=debug
+    # container_name: redpanda
+    # ports:
+    #   - 19644:9644
+    networks:
+      - microservices-network
+
+  redpanda-console:
+    # container_name: redpanda-console
+    image: docker.redpanda.com/redpandadata/console:v2.3.7
+    entrypoint: /bin/sh
+    command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["redpanda:9092"]
+          schemaRegistry:
+            enabled: true
+            urls: ["http://redpanda:8081"]
+        redpanda:
+          adminApi:
+            enabled: true
+            urls: ["http://redpanda:9644"]
+    ports:
+      - 18080:8080
+    depends_on:
+      - redpanda
+    networks:
+      - microservices-network
+
 
 networks:
   microservices-network:

@@ -3,6 +3,9 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+const { announce } = require("./announce.util")
+const TOPIC = process.env.SERVICE_UNIQUE_ID || 'general'
+
 // Register with Traefik
 app.use((req, res, next) => {
   res.setHeader('X-Traefik-Backend', 'nodejs-microservice');
@@ -11,7 +14,8 @@ app.use((req, res, next) => {
 });
 
 // Define a simple endpoint
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+  await announce(TOPIC, "OK")
   // console.log("Hello! ==> ", Date.now())
   // Get the IP address of the server
   const serverIp = req.socket.localAddress.split(':').pop();

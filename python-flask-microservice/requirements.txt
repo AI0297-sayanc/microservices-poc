@@ -1,4 +1,5 @@
 Flask>=2.0.0
+kafka-python==2.0.2
 # Add other dependencies as needed
 
 

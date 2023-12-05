@@ -3,12 +3,12 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# COPY package.json .
-# COPY package-lock.json .
+COPY package.json .
+COPY package-lock.json .
 
-# RUN npm install
+RUN npm install
 
 COPY . .
 
-CMD ["tail", "-f", "/dev/null"]
-# CMD ["node", "app.js"]
+# CMD ["tail", "-f", "/dev/null"]
+CMD ["node", "app.js"]
