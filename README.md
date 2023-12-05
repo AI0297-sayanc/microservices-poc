@@ -87,9 +87,10 @@ This project is a Microservices Proof of Concept (PoC) designed to showcase the 
    - Include instructions for monitoring and troubleshooting.
 
 7. **Future Considerations:**
-   - Consider transitioning to Docker Swarm or Kubernetes for production use.
-   - Explore additional features offered by these orchestrators for scalability and fault tolerance.
-   - Implement security measures and centralized logging.
+   - Consider transitioning to Docker Swarm or Kubernetes for production use and explore additional features offered by these orchestrators for scalability and fault tolerance.
+   - Implement security measures (including Authentication & Authorization) and centralized logging using tools like Grafana.
+   - Address Data Management & Data Sharing strategy, favoring decentralization where each microservice manages its own data for flexibility.
+
 
 ## Folder Structure
 
@@ -126,7 +127,17 @@ This project is a Microservices Proof of Concept (PoC) designed to showcase the 
    ```bash
    docker compose up --build -d --scale nodejs-microservice=2 --scale python-flask-microservice=2 --scale non-web-service=2
 
-4. Access the microservices at the specified endpoints.
+4. Access the microservices at the specified endpoints (you can hit them using curl, postman, etc):
+
+   a. Node JS service: http://microservices-poc.localhost/nodejs
+
+   b. Python service: http://microservices-poc.localhost/python
+
+5. Explore the UI Dashboard apps:
+
+   a. Traefik (for overview of the microservices): http://localhost:8080
+
+   b. Redpanda Console (for async messaging): http://localhost:18080
 
 ## License
 
